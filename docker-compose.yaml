@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  #nginx
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: on-failure
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+
+  #php
+  api:
+    container_name: api
+    build:
+      dockerfile: ./config/php/Dockerfile
+    restart: on-failure
+    volumes:
+      - ./api:/var/www/html
+    depends_on: [ nginx ]
+
+  #mysql
+  db:
+    container_name: db
+    image: mysql:8
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: library
+
+  #phpmyadmin
+  phpmyadmin:
+    container_name: phpmyadmin-db
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8081:80"
+
+volumes:
+  mysqldata:
