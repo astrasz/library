@@ -11,6 +11,7 @@ $ docker-compose up -d
 After containers built: 
 
 ```
+$ docker exec api php bin/console lexik:jwt:generate-keypair
 $ docker exec api php bin/console doctrine:migrations:migrate
 ```
 
